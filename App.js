@@ -46,8 +46,15 @@ export default function App () {
           </View>
 
           <View style={styles.recent}>
-
+            <View style={styles}>
+              <View style={styles.donationDetails}>
+                <Text style={styles.donationAmount}>₦12000000000</Text>
+                <Text style={styles.donationInfo}>1 minute ago</Text>
+              </View>
+              <Text style={styles.donatedBy}>Donated by sample@gmail.com</Text>
+            </View>
           </View>
+
         </View>
       </View>
     </SafeAreaView>
