@@ -8,9 +8,11 @@ Image,
 SafeAreaView,
 Platform,
 StatusBar } from "react-native";
+import { sampleData } from './assets/data/sample-data';
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faUser } from "@fortawesome/free-regular-svg-icons";
 
 export default function App () {
-  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.wrapper}>
@@ -23,10 +25,7 @@ export default function App () {
             <Text style={styles.brandName}>CharityApp</Text>
           </View>
 
-          <Image 
-          source={require('./assets/user.png')}
-          alt='icon'
-          style={styles.headerIcon}/>
+          <FontAwesomeIcon icon={faUser} color="#5C469C" size={36}/>
         </View>
 
         <View style={styles.body}>
@@ -46,12 +45,25 @@ export default function App () {
           </View>
 
           <View style={styles.recent}>
-            <View style={styles}>
-              <View style={styles.donationDetails}>
-                <Text style={styles.donationAmount}>₦12000000000</Text>
-                <Text style={styles.donationInfo}>1 minute ago</Text>
-              </View>
-              <Text style={styles.donatedBy}>Donated by sample@gmail.com</Text>
+            <Text style={styles.recentTitle}>Recent donations</Text>
+
+            <View style={styles.recentScroll}>
+              <FlatList 
+              data={sampleData}
+              renderItem={({item}) => {
+                return (
+                  <View style={styles.recentBlock}>
+                    <View style={styles.donationDetails}>
+                      <Text style={styles.donationAmount}>₦{item.amount}</Text>
+                      <Text style={styles.donationInfo}>{item.time} minutes ago</Text>
+                    </View>
+      
+                    <Text style={styles.donatedBy}>Donated by {item.email}</Text>
+                  </View>
+                )
+              }}
+              key={({item}) => item.id}
+              showsVerticalScrollIndicator={false}/>
             </View>
           </View>
 
@@ -108,11 +120,46 @@ const styles = StyleSheet.create({
   },
   recent:{
     flex:3.5,
+    marginTop:8,
+    padding:8,
+    borderRadius:8,
+    backgroundColor:'#FDE2F3',
   },
   actionBox:{
     width:'49%',
     height:'49%',
     backgroundColor:'#77037B',
     borderRadius:10,
+  },
+  recentTitle:{
+    fontSize:22,
+    marginBottom:2
+  },
+  recentBlock:{
+    backgroundColor:'#5C469C',
+    paddingHorizontal:6,
+    paddingVertical:8,
+    gap:4,
+    borderRadius:8,
+    marginBottom:3
+  },
+  recentScroll:{
+    flex:1,//new
+    flexDirection:'column',//new
+  },
+  donationDetails:{
+    flexDirection:'row',
+    justifyContent:'space-between'
+  },
+  donationAmount:{
+    fontSize:20,
+    color:'#fff'
+  },
+  donationInfo:{
+    color:'#D4ADFC'
+  },
+  donatedBy:{
+    color:'#D4ADFC',
+    fontSize:16
   }
 })
