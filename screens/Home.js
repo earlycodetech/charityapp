@@ -16,6 +16,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons  from 'react-native-vector-icons/Ionicons';
 import { Donate } from "./Donate";
 import { About } from "./About";
+import { Theme } from "../utils/theme";
 
 const Tab = createBottomTabNavigator();
 
@@ -112,23 +113,22 @@ export function MyHome () {
           let iconName;
 
           if (route.name === 'Home') {
-            iconName = focused
-              ? 'ios-information-circle'
-              : 'ios-information-circle-outline';
-          } else if (route.name === 'Settings') {
-            iconName = focused ? 'ios-list' : 'ios-list-outline';
+            iconName = focused ? 'home-sharp' : 'home-outline';
+          } else if (route.name === 'Donate') {
+            iconName = focused ? 'heart-circle-sharp' : 'heart-circle-outline';
+          } else if (route.name === 'About') {
+            iconName = focused ? 'information-circle' : 'information-circle-outline';
           }
-
-          // You can return any component that you like here!
+          
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: 'tomato',
+        tabBarActiveTintColor: Theme.colors.purple300,
         tabBarInactiveTintColor: 'gray',
       })}
     >
-      <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Donate" component={Donate} />
-      <Tab.Screen name="About" component={About} />
+      <Tab.Screen name="Home" component={Home} options={{headerShown:false}}/>
+      <Tab.Screen name="Donate" component={Donate} options={{headerShown:false}}/>
+      <Tab.Screen name="About" component={About} options={{headerShown:false}}/>
     </Tab.Navigator>
   )
 }
