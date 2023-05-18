@@ -12,8 +12,14 @@ import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font'; 
 import { Pacifico_400Regular } from "@expo-google-fonts/pacifico";
 import { SafeArea } from "../components/SafeArea";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Ionicons  from 'react-native-vector-icons/Ionicons';
+import { Donate } from "./Donate";
+import { About } from "./About";
 
-export function Home () {
+const Tab = createBottomTabNavigator();
+
+function Home () {
   const [appIsReady, setAppIsReady] = useState(false);
 
   useEffect(() => {
@@ -95,6 +101,35 @@ export function Home () {
         </View>
       </View>
     </SafeArea>
+  )
+}
+
+export function MyHome () {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          if (route.name === 'Home') {
+            iconName = focused
+              ? 'ios-information-circle'
+              : 'ios-information-circle-outline';
+          } else if (route.name === 'Settings') {
+            iconName = focused ? 'ios-list' : 'ios-list-outline';
+          }
+
+          // You can return any component that you like here!
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: 'tomato',
+        tabBarInactiveTintColor: 'gray',
+      })}
+    >
+      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Donate" component={Donate} />
+      <Tab.Screen name="About" component={About} />
+    </Tab.Navigator>
   )
 }
 
