@@ -105,7 +105,9 @@ function Home () {
   )
 }
 
-export function MyHome () {
+export function MyHome ({navigation,route}) {
+  const { firstName,city,scores } = route.params;
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
