@@ -37,7 +37,6 @@ export function Login ({navigation}) {
         return null;
       }
     
-
     return(
         <SafeArea>
             <View style={style.heding}>
@@ -61,11 +60,7 @@ export function Login ({navigation}) {
                   <View style={style.button}>
                     <Button 
                     mode="contained" 
-                    onPress={() => navigation.navigate('My Home',{
-                      firstName:'Joseph',
-                      city:'Abuja',
-                      scores:[4,9,9,9]
-                    })}>
+                    onPress={() => navigation.navigate('Donate')}>
                     Login
                     </Button>
                   </View>

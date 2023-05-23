@@ -4,8 +4,8 @@ import { StyleSheet } from "react-native";
 import { SafeArea } from "../components/SafeArea";
 import { Theme } from "../utils/theme";
 
-export function Donate () {
-    const { uid,setFirstName } = useContext(AppContext);
+export function FundRaisers () {
+    const { uid } = useContext(AppContext);
 
     return (
         <SafeArea>
