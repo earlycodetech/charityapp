@@ -4,10 +4,11 @@ View,
 Text,
 StyleSheet,
 FlatList,
-Image,} from "react-native";
+TouchableOpacity} from "react-native";
 import { sampleData } from '../assets/data/sample-data';
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
+import { faHeartCirclePlus,faUsersViewfinder,faClockRotateLeft,faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font'; 
 import { Pacifico_400Regular } from "@expo-google-fonts/pacifico";
@@ -20,7 +21,7 @@ import { Theme } from "../utils/theme";
 
 const Tab = createBottomTabNavigator();
 
-function Home () {
+function Home ({navigation}) {
   const [appIsReady, setAppIsReady] = useState(false);
 
   useEffect(() => {
@@ -51,31 +52,45 @@ function Home () {
   return (
     <SafeArea>
       <View style={styles.header} >
-        <View style={styles.leftHeader}>
-          <Image 
-          source={require('../assets/charityapp.png')}
-          alt='app logo'
-          style={styles.logo}/>
-          <Text style={styles.brandName}>CharityApp</Text>
-        </View>
-
-        <FontAwesomeIcon icon={faUser} color="#5C469C" size={36}/>
+        <Text style={styles.brandName}>CharityApp</Text>
+        <FontAwesomeIcon icon={faUser} color="#5C469C" size={30}/>
       </View>
 
       <View style={styles.body}>
         <View style={styles.actionBlock}> 
-          <View style={styles.actionBox}>
-            
-          </View>
-          <View style={styles.actionBox}>
-            
-          </View>
-          <View style={styles.actionBox}>
-            
-          </View>
-          <View style={styles.actionBox}>
-            
-          </View>
+          <TouchableOpacity style={styles.actionBox}>
+            <FontAwesomeIcon 
+            icon={faHeartCirclePlus} 
+            color={Theme.colors.purple100}
+            size={Theme.sizes[5]}/>
+            <Text style={styles.optionText}>Donate</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.actionBox}>
+            <FontAwesomeIcon 
+            icon={faUsersViewfinder} 
+            color={Theme.colors.purple100}
+            size={Theme.sizes[5]}/>
+            <Text style={styles.optionText}>Raisers</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.actionBox}>
+            <FontAwesomeIcon 
+            icon={faClockRotateLeft} 
+            color={Theme.colors.purple100}
+            size={Theme.sizes[5]}/>
+            <Text style={styles.optionText}>History</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+          style={styles.actionBox}
+          onPress={() => navigation.navigate('Create')}>
+            <FontAwesomeIcon 
+            icon={faCirclePlus} 
+            color={Theme.colors.purple100}
+            size={Theme.sizes[5]}/>
+            <Text style={styles.optionText}>Create</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.recent}>
@@ -139,24 +154,20 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     justifyContent:'space-between',
   },
-  leftHeader:{
-    flexDirection:'row',
-    alignItems:'center'
-  },
-  logo:{
-    width:52,
-    height:52,
-    marginRight:4
-  },
   brandName:{
     fontSize:28,
     fontWeight:'bold',
-    color:'red',
+    color:Theme.colors.purple900,
     fontFamily:'Pacifico_400Regular'
   },
   headerIcon:{
     width:48,
     height:48
+  },
+  optionText:{
+    fontSize:26,
+    color:'white',
+    fontWeight:'bold'
   },
   body:{
     flex:1,
@@ -168,13 +179,11 @@ const styles = StyleSheet.create({
     justifyContent:'space-between',
     flexWrap:'wrap',
     gap:6,
-    backgroundColor:'#E34DA2',
-    padding:8,
-    borderRadius:10,
   },
   recent:{
     flex:3.5,
-    marginTop:8,
+    marginTop:16,
+    marginBottom:6,
     padding:8,
     borderRadius:8,
     backgroundColor:'#FDE2F3',
@@ -182,6 +191,8 @@ const styles = StyleSheet.create({
   actionBox:{
     width:'49%',
     height:'49%',
+    justifyContent:'center',
+    alignItems:'center',
     backgroundColor:'#77037B',
     borderRadius:10,
   },
