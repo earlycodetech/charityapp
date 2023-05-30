@@ -1,4 +1,4 @@
-import { View,TouchableOpacity,Text,StyleSheet,} from "react-native";
+import { View,TouchableOpacity,Text,StyleSheet,Alert} from "react-native";
 import { SafeArea } from "../components/SafeArea";
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
@@ -7,12 +7,13 @@ import { useState,useEffect,useCallback } from "react";
 import { TextInput,Button } from 'react-native-paper';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { auth } from "../settings/firebase.setting";
+import { createUserWithEmailAndPassword,onAuthStateChanged } from 'firebase/auth';
 
 const validationRules = yup.object({
   email:yup.string().required('you must fill this field').min(5).max(36),
   password:yup.string().required().min(4)
   .oneOf([yup.ref('passwordConfirmation'),null],'password must match')
-  
 });
 
 export function Signup ({navigation}) {
@@ -52,7 +53,13 @@ return(
       <Formik
         initialValues={{ email: '',password:'',passwordConfirmation:'' }}
         onSubmit={(values,action) => {
-          console.log(values.email)
+          createUserWithEmailAndPassword(auth,values.email,values.password)
+          .then(() => {
+            Alert.alert('Notify',
+            'Account creation was succesfull',
+            [{text:'Go to Home',onPress:() => navigation.navigate('My Home')}])
+          })
+          .catch(error => console.log(error))
         }}
         validationSchema={validationRules}
       >
