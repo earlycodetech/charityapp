@@ -6,6 +6,7 @@ import { Signup } from './Signup';
 import { Donate } from "./Donate";
 import { FundRaisers } from "./FundRaisers";
 import { Create } from "./Create";
+import { ForgotPassword } from "./ForgotPassword";
 
 const Stack = createStackNavigator();
 
@@ -18,6 +19,7 @@ export function StackNavigation () {
             <Stack.Screen name='Donate' component={Donate} />
             <Stack.Screen name="Fund Raisers" component={FundRaisers}/>
             <Stack.Screen name="Create" component={Create}/>
+            <Stack.Screen name="Reset Password" component={ForgotPassword}/>
             <Stack.Screen name='Signup' component={Signup} options={{headerShown:true}} />
         </Stack.Navigator>
     )
