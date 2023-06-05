@@ -8,15 +8,17 @@ import { Pacifico_400Regular } from "@expo-google-fonts/pacifico";
 import { TextInput,Button } from 'react-native-paper';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { auth } from "../settings/firebase.setting";
-import { signInWithEmailAndPassword,onAuthStateChanged } from 'firebase/auth';
 
 const validationRules = yup.object({
-  email:yup.string().required('you must fill this field').min(5).max(36),
-  password:yup.string().required()
+    fName:yup.string().required('required filed'),
+    lName:yup.string().required('required filed'),
+    city:yup.string().required('required filed'),
+    mail:yup.string().required('required filed').min(16),
+    dob:yup.string(),
+    bio:yup.string(),
 });
 
-export function Login ({navigation}) {
+export function CreateProfile ({navigation}) {
   const {setUid} = useContext(AppContext);
   const [appIsReady, setAppIsReady] = useState(false);
 
@@ -48,40 +50,12 @@ export function Login ({navigation}) {
 return(
   <SafeArea>
     <View style={style.heading}>
-      <Text style={style.title}>Charity App</Text>
-      <Text style={style.title2}>Login to an existing account</Text>
+      <Text style={style.title}>Create Your Profile</Text>
       
       <Formik
-        initialValues={{ email: '',password:'' }}
+        initialValues={{ fName:'',lName:'',mail:'',city:'',dob:'',bio:'', }}
         onSubmit={(values,action) => {
-          signInWithEmailAndPassword(auth,values.email,values.password)
-          .then(() => onAuthStateChanged(auth,(user) => {
-            setUid(user.uid);//update the user uid on global variables
-            navigation.navigate('My Home');//redirect
-          }))
-          .catch((error) => {
-            console.log(error.code);
-            //custom actions for different errors
-            if (error.code == 'auth/invalid-email'){
-              Alert.alert(
-                'Message',
-                'Invalid email! Try again.',
-                [{text:'Try again'}]
-              )
-            } else if (error.code == 'auth/wrong-password' || error.code == 'auth/user-not-found') {
-              Alert.alert(
-                'Message',
-                'Incorrect email or password',
-                [{text:'Try again'}]
-              )
-            } else {
-              Alert.alert(
-                'Message',
-                'Something went wrong',
-                [{text:'Dismiss'}]
-              )
-            }
-          })
+          
         }}
         validationSchema={validationRules}
       >
@@ -142,10 +116,6 @@ const style = StyleSheet.create({
         },
     title:{
         fontSize:35,
-        fontFamily:'Pacifico_400Regular'
-         },
-    title2:{
-        marginTop:15
     },
     input:{
         marginTop:15,
@@ -158,6 +128,3 @@ const style = StyleSheet.create({
       color:'blue'
     },
 })
-
-//validation:a set rules for controlling form inputs
-//height 
