@@ -2,12 +2,11 @@ import { useState,useEffect,useCallback,useContext } from "react";
 import { AppContext } from "../settings/globalVariables";
 import { View,TouchableOpacity,Text,StyleSheet,Alert} from "react-native";
 import { SafeArea } from "../components/SafeArea";
-import * as SplashScreen from 'expo-splash-screen';
-import * as Font from 'expo-font';
-import { Pacifico_400Regular } from "@expo-google-fonts/pacifico";
 import { TextInput,Button } from 'react-native-paper';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { db } from '../settings/firebase.setting';
+import { setDoc,doc } from "firebase/firestore";
 
 const validationRules = yup.object({
     fName:yup.string().required('required filed'),
@@ -19,112 +18,144 @@ const validationRules = yup.object({
 });
 
 export function CreateProfile ({navigation}) {
-  const {setUid} = useContext(AppContext);
-  const [appIsReady, setAppIsReady] = useState(false);
+  const {uid} = useContext(AppContext);
 
-  useEffect(() => {
-    async function prepare() {
-      try {
-        await Font.loadAsync({Pacifico_400Regular});
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      } catch (e) {
-        console.warn(e);
-      } finally {
-        setAppIsReady(true);
-      }
-    }
-  
-    prepare();
-  }, []);
-    
-  const onLayoutRootView = useCallback(async () => {
-    if (appIsReady) {
-      await SplashScreen.hideAsync();
-    }
-  }, [appIsReady]);
-
-  if (!appIsReady) {
-    return null;
-  }
-
-return(
+  return (
   <SafeArea>
-    <View style={style.heading}>
-      <Text style={style.title}>Create Your Profile</Text>
-      
-      <Formik
-        initialValues={{ fName:'',lName:'',mail:'',city:'',dob:'',bio:'', }}
-        onSubmit={(values,action) => {
-          
-        }}
-        validationSchema={validationRules}
-      >
-          {({ handleChange, handleBlur, handleSubmit, values,errors,touched }) => (
+    <Text style={styles.title}>Create Your Profile</Text>
+    
+    <Formik
+      initialValues={{ fName:'',lName:'',mail:'',city:'',dob:'',bio:'', }}
+      onSubmit={(values,action) => {
+
+        setDoc(doc(db,'users',uid),{
+          firstName:values.fName,
+          lastName:values.lName,
+          mailingAddress:values.mail,
+          city:values.city,
+          dateOfBirth:'01/27/2000',
+          bioInfo:values.bio,
+          createdAt:new Date().getTime()
+        })
+        .then(() => {
+          Alert.alert(
+            'Message',
+            'Profile created!!',
+            [
+              {text:'Go to Home',onPress:() => navigation.navigate('My Home')},
+              {text:'Go to Profile',onPress:() => navigation.navigate('Profile')}
+            ]
+          )
+        })
+        .catch(error => {
+          Alert.alert(
+            'Message',
+            error.message,
+            [{text:'Dismiss'}]
+          )
+        })
+      }}
+      validationSchema={validationRules}
+    >
+        {({ handleChange, handleBlur, handleSubmit, values,errors,touched }) => (
+          <View style={styles.form}>
             <View>
-              <View>
-                <TextInput
-                  outlineColor="hotpink"
-                  mode="outlined"
-                  label='email'
-                  style={style.input}
-                  onChangeText={handleChange('email')}
-                  onBlur={handleBlur('email')}
-                  value={values.email}
-                />
-                {touched.email && errors.email 
-                ? <Text style={{color:'red'}}>{errors.email}</Text> 
-                : null}
-              </View>
-            
               <TextInput
-                outlineColor="hotpink"
+                outlineColor="gray"
+                activeOutlineColor="#5D9C59"
                 mode="outlined"
-                label='password'
-                style={style.input}
-                onChangeText={handleChange('password')}
-                onBlur={handleBlur('password')}
-                value={values.password}
-                secureTextEntry={true}
+                label='first name'
+                onChangeText={handleChange('fName')}
+                onBlur={handleBlur('fName')}
+                value={values.fName}
               />
-              
-              <Button
-              buttonColor="hotpink"
-              mode="contained"
-              onPress={handleSubmit}
-              contentStyle={{paddingVertical:6}}
-              style={{marginVertical:12}}>Sign in</Button>
+              {touched.fName && errors.fName 
+              ? <Text style={{color:'red'}}>{errors.fName}</Text> 
+              : null}
             </View>
-          )}
-        </Formik>
-        <View style={style.account}>
-            <Text >Don't have an account? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-                <Text style={style.sign}>Sign up</Text>
-            </TouchableOpacity>
-        </View>
-      </View>
+
+            <View>
+              <TextInput
+                outlineColor="gray"
+                activeOutlineColor="#5D9C59"
+                mode="outlined"
+                label='last name'
+                onChangeText={handleChange('lName')}
+                onBlur={handleBlur('lName')}
+                value={values.lName}
+              />
+              {touched.lName && errors.lName 
+              ? <Text style={{color:'red'}}>{errors.lName}</Text> 
+              : null}
+            </View>
+
+            <View>
+              <TextInput
+                outlineColor="gray"
+                activeOutlineColor="#5D9C59"
+                mode="outlined"
+                label='current city'
+                onChangeText={handleChange('city')}
+                onBlur={handleBlur('city')}
+                value={values.city}
+              />
+              {touched.city && errors.city 
+              ? <Text style={{color:'red'}}>{errors.city}</Text> 
+              : null}
+            </View>
+
+            <View>
+              <TextInput
+                outlineColor="gray"
+                activeOutlineColor="#5D9C59"
+                mode="outlined"
+                label='mailing address'
+                onChangeText={handleChange('mail')}
+                onBlur={handleBlur('mail')}
+                value={values.mail}
+                multiline={true}
+              />
+              {touched.mail && errors.mail 
+              ? <Text style={{color:'red'}}>{errors.mail}</Text> 
+              : null}
+            </View>
+
+            <View>
+              <TextInput
+                outlineColor="gray"
+                activeOutlineColor="#5D9C59"
+                mode="outlined"
+                label='bio'
+                onChangeText={handleChange('bio')}
+                onBlur={handleBlur('bio')}
+                value={values.bio}
+                multiline={true}
+              />
+              {touched.bio && errors.bio 
+              ? <Text style={{color:'red'}}>{errors.bio}</Text> 
+              : null}
+            </View>
+    
+            <Button
+            buttonColor="#5D9C59"
+            mode="contained"
+            onPress={handleSubmit}
+            contentStyle={{paddingVertical:6}}
+            style={{marginVertical:12}}>Update Profile</Button>
+          </View>
+        )}
+      </Formik>
     </SafeArea>
   )
 }
 
-const style = StyleSheet.create({
-    heading:{ 
-        flex:1,
-        alignItems:'center',
-        justifyContent:'center',
-        marginBottom:280
-        },
-    title:{
-        fontSize:35,
-    },
-    input:{
-        marginTop:15,
-        width:300,
-    },
-    account:{
-      flexDirection:'row'
-    },
-    sign:{
-      color:'blue'
-    },
+const styles = StyleSheet.create({
+  title:{
+      fontSize:35,
+      marginBottom:16
+  },
+  form:{
+    flexDirection:'column',
+    gap:4
+  }
 })

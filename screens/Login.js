@@ -95,7 +95,7 @@ return(
                   style={style.input}
                   onChangeText={handleChange('email')}
                   onBlur={handleBlur('email')}
-                  value={values.email}
+                  value={values.email} 
                 />
                 {touched.email && errors.email 
                 ? <Text style={{color:'red'}}>{errors.email}</Text> 
