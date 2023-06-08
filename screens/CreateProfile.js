@@ -1,6 +1,6 @@
 import { useState,useEffect,useCallback,useContext } from "react";
 import { AppContext } from "../settings/globalVariables";
-import { View,TouchableOpacity,Text,StyleSheet,Alert} from "react-native";
+import { View,ActivityIndicator,Text,StyleSheet,Alert} from "react-native";
 import { SafeArea } from "../components/SafeArea";
 import { TextInput,Button } from 'react-native-paper';
 import { Formik } from 'formik';
@@ -19,15 +19,18 @@ const validationRules = yup.object({
 
 export function CreateProfile ({navigation}) {
   const {uid} = useContext(AppContext);
+  const [eventActivityIndicator,setEventActivityIndicator] = useState(false);
 
   return (
   <SafeArea>
     <Text style={styles.title}>Create Your Profile</Text>
-    
+    {eventActivityIndicator ?   <ActivityIndicator size='large'/> : null}
+
     <Formik
       initialValues={{ fName:'',lName:'',mail:'',city:'',dob:'',bio:'', }}
       onSubmit={(values,action) => {
 
+        setEventActivityIndicator(true);//start ActivityIndicator
         setDoc(doc(db,'users',uid),{
           firstName:values.fName,
           lastName:values.lName,
@@ -38,6 +41,7 @@ export function CreateProfile ({navigation}) {
           createdAt:new Date().getTime()
         })
         .then(() => {
+          setEventActivityIndicator(false);
           Alert.alert(
             'Message',
             'Profile created!!',
@@ -48,6 +52,7 @@ export function CreateProfile ({navigation}) {
           )
         })
         .catch(error => {
+          setEventActivityIndicator(false);//stop ActivityIndicator
           Alert.alert(
             'Message',
             error.message,
@@ -141,7 +146,13 @@ export function CreateProfile ({navigation}) {
             mode="contained"
             onPress={handleSubmit}
             contentStyle={{paddingVertical:6}}
-            style={{marginVertical:12}}>Update Profile</Button>
+            style={{marginVertical:12}}>
+               {
+                eventActivityIndicator
+                ? <ActivityIndicator size='small'/>
+                : 'Create Profile'
+               }
+            </Button>
           </View>
         )}
       </Formik>

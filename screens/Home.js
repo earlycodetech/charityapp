@@ -63,7 +63,7 @@ function Home ({navigation}) {
 
       <View style={styles.body}>
         <View style={styles.actionBlock}> 
-          <TouchableOpacity style={styles.actionBox}>
+          <TouchableOpacity style={styles.actionBox} onPress={() => navigation.navigate('Profile')}>
             <FontAwesomeIcon 
             icon={faHeartCirclePlus} 
             color={Theme.colors.purple100}
