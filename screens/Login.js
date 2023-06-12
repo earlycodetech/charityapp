@@ -1,6 +1,7 @@
 import { useState,useEffect,useCallback,useContext } from "react";
 import { AppContext } from "../settings/globalVariables";
 import { View,TouchableOpacity,Text,StyleSheet,Alert} from "react-native";
+import { Theme } from '../utils/theme';
 import { SafeArea } from "../components/SafeArea";
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
@@ -47,10 +48,12 @@ export function Login ({navigation}) {
 
 return(
   <SafeArea>
-    <View style={style.heading}>
-      <Text style={style.title}>Charity App</Text>
-      <Text style={style.title2}>Login to an existing account</Text>
-      
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Charity App</Text>
+        <Text style={styles.text}>Login to an existing account</Text>
+      </View>
+
       <Formik
         initialValues={{ email: '',password:'' }}
         onSubmit={(values,action) => {
@@ -86,13 +89,14 @@ return(
         validationSchema={validationRules}
       >
           {({ handleChange, handleBlur, handleSubmit, values,errors,touched }) => (
-            <View>
+            <View style={styles.formWrapper}>
               <View>
                 <TextInput
-                  outlineColor="hotpink"
+                  style={{width:'100%'}}
+                  outlineColor={Theme.colors.gray100}
+                  activeOutlineColor={Theme.colors.gray200}
                   mode="outlined"
                   label='email'
-                  style={style.input}
                   onChangeText={handleChange('email')}
                   onBlur={handleBlur('email')}
                   value={values.email} 
@@ -103,10 +107,10 @@ return(
               </View>
             
               <TextInput
-                outlineColor="hotpink"
+                outlineColor={Theme.colors.gray100}
+                activeOutlineColor={Theme.colors.gray200}
                 mode="outlined"
                 label='password'
-                style={style.input}
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
                 value={values.password}
@@ -114,18 +118,19 @@ return(
               />
               
               <Button
-              buttonColor="hotpink"
+              buttonColor={Theme.colors.gray200}
               mode="contained"
               onPress={handleSubmit}
-              contentStyle={{paddingVertical:6}}
-              style={{marginVertical:12}}>Sign in</Button>
+              contentStyle={{paddingVertical:6,}}
+              style={{borderRadius:6}}>Sign in</Button>
             </View>
           )}
         </Formik>
-        <View style={style.account}>
-            <Text >Don't have an account? </Text>
+        
+        <View style={styles.row}>
+            <Text style={styles.text}>Don't have an account? </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-                <Text style={style.sign}>Sign up</Text>
+                <Text style={styles.sign}>Sign up</Text>
             </TouchableOpacity>
         </View>
       </View>
@@ -133,31 +138,35 @@ return(
   )
 }
 
-const style = StyleSheet.create({
-    heading:{ 
-        flex:1,
-        alignItems:'center',
-        justifyContent:'center',
-        marginBottom:280
-        },
-    title:{
-        fontSize:35,
-        fontFamily:'Pacifico_400Regular'
-         },
-    title2:{
-        marginTop:15
-    },
-    input:{
-        marginTop:15,
-        width:300,
-    },
-    account:{
-      flexDirection:'row'
-    },
-    sign:{
-      color:'blue'
-    },
+const styles = StyleSheet.create({
+  container:{ 
+    flex:1,
+    alignItems:'center',
+    gap:40,
+  },
+  header:{
+    justifyContent:'center',
+    alignItems:'center',
+    gap:16,
+    marginTop:20,
+  },
+  title:{
+    fontSize:35,
+    fontFamily:'Pacifico_400Regular'
+  },
+  formWrapper:{
+    width:'100%',
+    flexDirection:'column',
+    gap:16
+  },
+  row:{
+    flexDirection:'row'
+  },
+  text:{
+    fontSize:20
+  },
+  sign:{
+    fontSize:20,
+    color:Theme.colors.blue400
+  },
 })
-
-//validation:a set rules for controlling form inputs
-//height 
