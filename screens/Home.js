@@ -1,14 +1,10 @@
-import { useState,useEffect,useCallback } from "react";
-import { 
-View,
-Text,
-StyleSheet,
-FlatList,
-TouchableOpacity} from "react-native";
+import { useState,useEffect,useCallback,useContext } from "react";
+import { AppContext } from "../settings/globalVariables";
+import { View,Text,StyleSheet,FlatList,TouchableOpacity } from "react-native";
 import { sampleData } from '../assets/data/sample-data';
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
-import { faHeartCirclePlus,faUsersViewfinder,faClockRotateLeft,faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import { faHeartCirclePlus,faUsersViewfinder,faClockRotateLeft,faCirclePlus,faSignOut } from "@fortawesome/free-solid-svg-icons";
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font'; 
 import { Pacifico_400Regular } from "@expo-google-fonts/pacifico";
@@ -18,11 +14,24 @@ import Ionicons  from 'react-native-vector-icons/Ionicons';
 import { Donate } from "./Donate";
 import { About } from "./About";
 import { Theme } from "../utils/theme";
+import { auth } from '../settings/firebase.setting';
+import { signOut } from "firebase/auth";
 
 const Tab = createBottomTabNavigator();
 
 function Home ({navigation}) {
   const [appIsReady, setAppIsReady] = useState(false);
+  const {uid,setUid} = useContext(AppContext);
+
+  //handle sign out
+  const handleSignOut = () => {
+    signOut(auth)
+    .then(() => {
+      // uid ? setUid(undefined) : null;
+      navigation.navigate('Login')
+    })
+    .catch(error => console.log(error))
+  }
 
   useEffect(() => {
     async function prepare() {
@@ -53,12 +62,16 @@ function Home ({navigation}) {
     <SafeArea>
       <View style={styles.header} >
         <Text style={styles.brandName}>CharityApp</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-          <FontAwesomeIcon 
-          icon={faUser} 
-          color={Theme.colors.gray400}
-          size={30}/>
-        </TouchableOpacity>
+
+        <View style={styles.headerRight}>
+          <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+            <FontAwesomeIcon icon={faUser} color={Theme.colors.gray400} size={30}/>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={handleSignOut}>
+            <FontAwesomeIcon icon={faSignOut} color={Theme.colors.gray400} size={30}/>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={styles.body}>
@@ -66,7 +79,7 @@ function Home ({navigation}) {
           <TouchableOpacity style={styles.actionBox} onPress={() => navigation.navigate('Profile')}>
             <FontAwesomeIcon 
             icon={faHeartCirclePlus} 
-            color={Theme.colors.purple100}
+            color={Theme.colors.lime100}
             size={Theme.sizes[5]}/>
             <Text style={styles.optionText}>Donate</Text>
           </TouchableOpacity>
@@ -74,7 +87,7 @@ function Home ({navigation}) {
           <TouchableOpacity style={styles.actionBox}>
             <FontAwesomeIcon 
             icon={faUsersViewfinder} 
-            color={Theme.colors.purple100}
+            color={Theme.colors.lime100}
             size={Theme.sizes[5]}/>
             <Text style={styles.optionText}>Raisers</Text>
           </TouchableOpacity>
@@ -82,7 +95,7 @@ function Home ({navigation}) {
           <TouchableOpacity style={styles.actionBox}>
             <FontAwesomeIcon 
             icon={faClockRotateLeft} 
-            color={Theme.colors.purple100}
+            color={Theme.colors.lime100}
             size={Theme.sizes[5]}/>
             <Text style={styles.optionText}>History</Text>
           </TouchableOpacity>
@@ -92,7 +105,7 @@ function Home ({navigation}) {
           onPress={() => navigation.navigate('Create')}>
             <FontAwesomeIcon 
             icon={faCirclePlus} 
-            color={Theme.colors.purple100}
+            color={Theme.colors.lime100}
             size={Theme.sizes[5]}/>
             <Text style={styles.optionText}>Create</Text>
           </TouchableOpacity>
@@ -143,8 +156,8 @@ export function MyHome ({navigation}) {
           
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: Theme.colors.purple300,
-        tabBarInactiveTintColor: 'gray',
+        tabBarActiveTintColor: Theme.colors.lime400,
+        tabBarInactiveTintColor: Theme.colors.gray400,
       })}
     >
       <Tab.Screen name="Home" component={Home} options={{headerShown:false}}/>
@@ -164,6 +177,10 @@ const styles = StyleSheet.create({
     fontWeight:'bold',
     color:Theme.colors.purple900,
     fontFamily:'Pacifico_400Regular'
+  },
+  headerRight:{
+    flexDirection:'row',
+    gap:26,
   },
   headerIcon:{
     width:48,
@@ -191,22 +208,23 @@ const styles = StyleSheet.create({
     marginBottom:6,
     padding:8,
     borderRadius:8,
-    backgroundColor:'#FDE2F3',
+    backgroundColor:Theme.colors.gray100,
   },
   actionBox:{
     width:'49%',
     height:'49%',
     justifyContent:'center',
     alignItems:'center',
-    backgroundColor:'#77037B',
+    backgroundColor:Theme.colors.gray400,
     borderRadius:10,
   },
   recentTitle:{
     fontSize:22,
-    marginBottom:2
+    color:'white',
+    marginBottom:6
   },
   recentBlock:{
-    backgroundColor:'#5C469C',
+    backgroundColor:Theme.colors.gray400,
     paddingHorizontal:6,
     paddingVertical:8,
     gap:4,
@@ -214,8 +232,8 @@ const styles = StyleSheet.create({
     marginBottom:3
   },
   recentScroll:{
-    flex:1,//new
-    flexDirection:'column',//new
+    flex:1,
+    flexDirection:'column',
   },
   donationDetails:{
     flexDirection:'row',
@@ -226,10 +244,10 @@ const styles = StyleSheet.create({
     color:'#fff'
   },
   donationInfo:{
-    color:'#D4ADFC'
+    color:Theme.colors.lime100
   },
   donatedBy:{
-    color:'#D4ADFC',
+    color:Theme.colors.lime100,
     fontSize:16
   }
 })
