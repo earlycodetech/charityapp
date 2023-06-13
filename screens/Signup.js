@@ -11,6 +11,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import { auth } from "../settings/firebase.setting";
 import { createUserWithEmailAndPassword,onAuthStateChanged } from 'firebase/auth';
+import { UseActivityIndicator } from "../components/ActivityIndicator";
 
 const validationRules = yup.object({
   email:yup.string().required('you must fill this field').min(5).max(36),
@@ -21,6 +22,7 @@ const validationRules = yup.object({
 export function Signup ({navigation}) {
   const {setUid} = useContext(AppContext);
   const [appIsReady, setAppIsReady] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     async function prepare() {
@@ -49,6 +51,8 @@ export function Signup ({navigation}) {
 
 return(
   <SafeArea>
+    <UseActivityIndicator bool={modalVisible}/>
+
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Charity App</Text>
@@ -58,8 +62,10 @@ return(
       <Formik
         initialValues={{ email: '',password:'',passwordConfirmation:'' }}
         onSubmit={(values,action) => {
+          setModalVisible(true);//start activiyIndicator
           createUserWithEmailAndPassword(auth,values.email,values.password)
           .then(() => onAuthStateChanged(auth,(user) => {
+            setModalVisible(false);//stop activiyIndicator
             setUid(user.uid);//update to the user's UID
             Alert.alert(
               'Message',
@@ -68,6 +74,7 @@ return(
             )
           }))
           .catch((error) => {
+            setModalVisible(false);//stop activiyIndicator
             //custom actions for different errors
             if (error.code == 'auth/invalid-email'){
               Alert.alert(

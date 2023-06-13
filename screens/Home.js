@@ -56,7 +56,7 @@ function Home ({navigation}) {
         <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
           <FontAwesomeIcon 
           icon={faUser} 
-          color="#5C469C" 
+          color={Theme.colors.gray400}
           size={30}/>
         </TouchableOpacity>
       </View>
