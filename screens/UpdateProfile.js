@@ -7,6 +7,7 @@ import { getDoc,doc } from "firebase/firestore";
 import { Button,TextInput} from "react-native-paper";
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { UseActivityIndicator } from "../components/ActivityIndicator";
 
 const validationRules = yup.object({
     name:yup.string(),
@@ -19,6 +20,7 @@ export function UpdateProfile ({navigation}) {
     const { uid } = useContext(AppContext);
     //updated useState after data is fetched
     const [userRecords,setUserRecords] = useState({});
+    const [modalVisible, setModalVisible] = useState(false);
 
     //fetch data after component is loaded
     useEffect(() => {
@@ -31,6 +33,8 @@ export function UpdateProfile ({navigation}) {
 
     return (
         <View style={styles.container}>
+            <UseActivityIndicator bool={modalVisible}/>
+
             <Image
             style={styles.headerImage}
             source={{uri:'https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'}}/>   
@@ -52,68 +56,68 @@ export function UpdateProfile ({navigation}) {
                         {({ handleChange, handleBlur, handleSubmit, values,errors,touched }) => (
                         <View style={styles.form}>
                             <View>
-                            <TextInput
-                                outlineColor="gray"
-                                activeOutlineColor="#80D8FF"
-                                style={styles.input}
-                                mode="outlined"
-                                label='Name'
-                                onChangeText={handleChange('name')}
-                                onBlur={handleBlur('name')}
-                                value={values.name}
-                            />
-                            {touched.name && errors.name ? <Text style={{color:'red'}}>{errors.fName}</Text> : null}
+                                <TextInput
+                                    outlineColor="gray"
+                                    activeOutlineColor="#80D8FF"
+                                    style={styles.input}
+                                    mode="outlined"
+                                    label='Name'
+                                    onChangeText={handleChange('name')}
+                                    onBlur={handleBlur('name')}
+                                    value={values.name}
+                                />
+                                {touched.name && errors.name ? <Text style={{color:'red'}}>{errors.fName}</Text> : null}
                             </View>
                             <View>
-                            <TextInput
-                                outlineColor="gray"
-                                activeOutlineColor="#80D8FF"
-                                style={styles.input}
-                                mode="outlined"
-                                label='Email'
-                                onChangeText={handleChange('email')}
-                                onBlur={handleBlur('email')}
-                                value={values.email}
-                            />
-                            {touched.email && errors.email ? <Text style={{color:'red'}}>{errors.email}</Text> : null}
-                            </View>
-                
-                            <View>
-                            <TextInput
-                                outlineColor="gray"
-                                activeOutlineColor="#80D8FF"
-                                style={styles.input}
-                                mode="outlined"
-                                label='Phone Number'
-                                onChangeText={handleChange('phoneNo')}
-                                onBlur={handleBlur('phoneNo')}
-                                value={values.phoneNo}
-                            />
-                            {touched.phoneNo && errors.phoneNo  ? <Text style={{color:'red'}}>{errors.phoneNo}</Text>  : null}
+                                <TextInput
+                                    outlineColor="gray"
+                                    activeOutlineColor="#80D8FF"
+                                    style={styles.input}
+                                    mode="outlined"
+                                    label='Email'
+                                    onChangeText={handleChange('email')}
+                                    onBlur={handleBlur('email')}
+                                    value={values.email}
+                                />
+                                {touched.email && errors.email ? <Text style={{color:'red'}}>{errors.email}</Text> : null}
                             </View>
                 
                             <View>
-                            <TextInput
-                                outlineColor="gray"
-                                activeOutlineColor="#80D8FF"
-                                style={styles.input}
-                                mode="outlined"
-                                label='bio'
-                                onChangeText={handleChange('bio')}
-                                onBlur={handleBlur('bio')}
-                                value={values.bio}
-                                multiline={true}
-                            />
-                            {touched.bio && errors.bio ? <Text style={{color:'red'}}>{errors.bio}</Text> : null}
+                                <TextInput
+                                    outlineColor="gray"
+                                    activeOutlineColor="#80D8FF"
+                                    style={styles.input}
+                                    mode="outlined"
+                                    label='Phone Number'
+                                    onChangeText={handleChange('phoneNo')}
+                                    onBlur={handleBlur('phoneNo')}
+                                    value={values.phoneNo}
+                                />
+                                {touched.phoneNo && errors.phoneNo  ? <Text style={{color:'red'}}>{errors.phoneNo}</Text>  : null}
+                            </View>
+                
+                            <View>
+                                <TextInput
+                                    outlineColor="gray"
+                                    activeOutlineColor="#80D8FF"
+                                    style={styles.input}
+                                    mode="outlined"
+                                    label='bio'
+                                    onChangeText={handleChange('bio')}
+                                    onBlur={handleBlur('bio')}
+                                    value={values.bio}
+                                    multiline={true}
+                                />
+                                {touched.bio && errors.bio ? <Text style={{color:'red'}}>{errors.bio}</Text> : null}
                             </View>
                     
                             <Button
-                            buttonColor="#80D8FF"
+                            buttonColor={Theme.colors.gray400}
                             mode="contained"
                             onPress={handleSubmit}
                             contentStyle={{paddingVertical:6}}
-                            style={{marginVertical:12,width:300,}}>
-                            Submit
+                            style={{width:'100%',marginTop:6}}>
+                            UPDATE PROFILE
                             </Button>
                         </View>
                         )}
@@ -137,7 +141,11 @@ const styles = StyleSheet.create({
     },
     body:{
         flex:4,
-        paddingBottom:28,
+        paddingHorizontal:16,
+        paddingVertical:20,
+    },
+    form:{
+        gap:6
     },
     contentBox:{
         backgroundColor:'white',
@@ -148,5 +156,5 @@ const styles = StyleSheet.create({
         borderWidth:1,
         borderColor:Theme.colors.gray100,
         marginTop:10
-    }
-})
+    },
+});
