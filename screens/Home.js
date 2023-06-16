@@ -76,7 +76,8 @@ function Home ({navigation}) {
 
       <View style={styles.body}>
         <View style={styles.actionBlock}> 
-          <TouchableOpacity style={styles.actionBox} onPress={() => navigation.navigate('Profile')}>
+          <TouchableOpacity style={styles.actionBox} 
+          onPress={() => navigation.navigate('Profile')}>
             <FontAwesomeIcon 
             icon={faHeartCirclePlus} 
             color={Theme.colors.lime100}
@@ -84,7 +85,8 @@ function Home ({navigation}) {
             <Text style={styles.optionText}>Donate</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionBox}>
+          <TouchableOpacity style={styles.actionBox} 
+          onPress={() => navigation.navigate('Fund Raisers')}>
             <FontAwesomeIcon 
             icon={faUsersViewfinder} 
             color={Theme.colors.lime100}

@@ -18,6 +18,7 @@ export function Profile ({navigation}) {
             const snapShot = await getDoc(doc(db,'users',uid));
             setUserRecords(snapShot.data());
         }
+        
         handleGetUserRecords();
     },[]);
 
@@ -31,29 +32,29 @@ export function Profile ({navigation}) {
                 <ScrollView>
                     <View style={styles.contentBox}>
                         <View style={{paddingLeft:9}}>
-                        <Text style={{fontWeight:'bold'}}>Name :</Text>
-                        <Text style={{fontWeight:'bold',fontSize:28}}>{userRecords.firstName} {userRecords.lastName}</Text> 
+                            <Text>Name :</Text>
+                            <Text style={{fontWeight:'200',fontSize:28}}>{userRecords.firstName} {userRecords.lastName}</Text> 
                         </View>
                     </View>
 
                     <View style={styles.contentBox}>
                         <View style={{paddingLeft:9}}>
-                        <Text style={{fontWeight:'bold'}}>Date Of Birth :</Text>
-                        <Text style={{fontWeight:'bold',fontSize:28}}>{userRecords.dateOfBirth}</Text>
+                            <Text>Date Of Birth :</Text>
+                            <Text style={{fontSize:28}}>{userRecords.dateOfBirth}</Text>
                         </View>
                     </View>
 
                     <View style={styles.contentBox}>
                         <View style={{paddingLeft:9}}>
-                        <Text style={{fontWeight:'bold'}}>City :</Text>
-                        <Text style={{fontWeight:'bold',fontSize:28}}>{userRecords.city}</Text>
+                            <Text>City :</Text>
+                            <Text style={{fontSize:28}}>{userRecords.city}</Text>
                         </View>
                     </View>
 
                     <View style={styles.contentBox}>
                         <View style={{paddingLeft:9}}>
-                        <Text style={{fontWeight:'bold'}}>Bio :</Text>
-                        <Text style={{fontWeight:'bold',fontSize:28}}>{userRecords.bioInfo}</Text>
+                            <Text>Bio :</Text>
+                            <Text style={{fontSize:28}}>{userRecords.bioInfo}</Text>
                         </View>
                     </View>
 

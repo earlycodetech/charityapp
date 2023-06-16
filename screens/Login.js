@@ -66,7 +66,7 @@ return(
           signInWithEmailAndPassword(auth,values.email,values.password)
           .then(() => onAuthStateChanged(auth,(user) => {
             setModalVisible(false);//stop activiyIndicator
-            //setUid(user.uid);//update the user uid on global variables
+            setUid(user.uid);//update the user uid on global variables
             navigation.navigate('My Home');//redirect
           }))
           .catch((error) => {
