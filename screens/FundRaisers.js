@@ -23,6 +23,7 @@ export function FundRaisers () {
     return (
         <SafeArea>
             <View style={styles.container}>
+                {/* Please scroll down to find some notes that I have added */}
                <FlatList data={raisers} 
                 key={({item}) => item.id}
                 showsVerticalScrollIndicator={false}
@@ -55,6 +56,8 @@ const styles = StyleSheet.create({
     card:{//add this
         marginBottom:Theme.sizes[3]
     }, 
+    //create a PayStack account at https://dashboard.paystack.com/#/signup
+    //we will setup card payments on our next class
     cardContent:{
         paddingVertical:Theme.sizes[2]
     },
