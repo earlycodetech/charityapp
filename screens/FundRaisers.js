@@ -6,7 +6,7 @@ import { Theme } from '../utils/theme';
 import { db } from '../settings/firebase.setting';
 import { getDocs,collection } from "firebase/firestore";
 
-export function FundRaisers () {
+export function FundRaisers ({navigation}) {
     const [raisers,setRaisers] = useState([]);
 
     const handleGetRaisers = async () => {
@@ -23,7 +23,6 @@ export function FundRaisers () {
     return (
         <SafeArea>
             <View style={styles.container}>
-                {/* Please scroll down to find some notes that I have added */}
                <FlatList data={raisers} 
                 key={({item}) => item.id}
                 showsVerticalScrollIndicator={false}
@@ -37,7 +36,9 @@ export function FundRaisers () {
                             <Text variant="bodyMedium">{item.data.description}</Text>
                         </Card.Content>
                         <Card.Actions>
-                            <Button style={styles.viewBtn}>View</Button>
+                            <Button onPress={() => navigation.navigate('Fund Raiser',{
+                                projectId:item.id,
+                            })} style={styles.viewBtn}>View</Button>
                             <Button style={styles.donateBtn}>Dontate</Button>
                         </Card.Actions>
                     </Card>
@@ -51,13 +52,10 @@ export function FundRaisers () {
 const styles = StyleSheet.create({
     container:{
         flex:1,
-        //gap:Theme.sizes[3],//remove this line and set margin bottom on Card
     },
-    card:{//add this
+    card:{
         marginBottom:Theme.sizes[3]
-    }, 
-    //create a PayStack account at https://dashboard.paystack.com/#/signup
-    //we will setup card payments on our next class
+    },
     cardContent:{
         paddingVertical:Theme.sizes[2]
     },
