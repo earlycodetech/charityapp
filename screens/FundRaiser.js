@@ -7,6 +7,7 @@ import { db } from '../settings/firebase.setting';
 import { getDoc,doc } from "firebase/firestore";
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { numberWithCommas } from '../utils/numberWithCommas';
 
 const validationRules = yup.object({
     amount:yup.number().required().min(100),
@@ -31,13 +32,13 @@ export function FundRaiser ({navigation,route}) {
                     <Card.Content style={styles.cardContent}>
                         <Text variant="headlineMedium">{fundRaiser.title}</Text>
                         <Text variant="titleLarge" style={{color:'green',marginVertical:Theme.sizes[3]}}>
-                            Target: ₦{fundRaiser.target}
+                            Target: ₦{numberWithCommas(fundRaiser.target)}
                         </Text>
                         <Text variant="bodyMedium">{fundRaiser.description}</Text>
                     </Card.Content>
                     <Card.Actions>
                         <Button 
-                        style={styles.donateBtn}
+                        buttonColor="white"
                         onPress={() => {
                             if (hideOrShowForm) {
                                 setHideOrShowForm(false)
@@ -48,10 +49,16 @@ export function FundRaiser ({navigation,route}) {
                     >{hideOrShowForm ? 'Cancel' : 'Dontate'}</Button>
                     </Card.Actions>
 
-                    <View style={{display:hideOrShowForm ? 'block' : 'none'}}>
+                    <View style={{display:hideOrShowForm ? 'flex' : 'none'}}>
                         <Formik
-                            initialValues={{ amount: 0,}}
-                            onSubmit={(values,action) => {}}
+                            initialValues={{ amount: '',}}
+                            onSubmit={(values,action) => {
+                                //navigate to "Pay" screen with details
+                                navigation.navigate('Pay',{
+                                    project:fundRaiser.title,
+                                    amount:values.amount,
+                                })
+                            }}
                             validationSchema={validationRules}
                         >
                             {({ handleChange, handleBlur, handleSubmit, values,errors,touched }) => (
@@ -101,7 +108,6 @@ const styles = StyleSheet.create({
     },
     donateBtn:{
         backgroundColor:Theme.colors.gray400,
-        color:Theme.colors.lime400
     },
     inputRow:{
         marginBottom:Theme.sizes[2]

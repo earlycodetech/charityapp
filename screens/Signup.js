@@ -20,7 +20,7 @@ const validationRules = yup.object({
 });
 
 export function Signup ({navigation}) {
-  const {setUid} = useContext(AppContext);
+  const {setUid,setEmail} = useContext(AppContext);
   const [appIsReady, setAppIsReady] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -67,6 +67,7 @@ return(
           .then(() => onAuthStateChanged(auth,(user) => {
             setModalVisible(false);//stop activiyIndicator
             setUid(user.uid);//update to the user's UID
+            setEmail(values.email);
             Alert.alert(
               'Message',
               'Your account was created!',

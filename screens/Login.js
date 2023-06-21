@@ -19,7 +19,7 @@ const validationRules = yup.object({
 });
 
 export function Login ({navigation}) {
-  const {setUid} = useContext(AppContext);
+  const {setUid,setEmail} = useContext(AppContext);
   const [appIsReady, setAppIsReady] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -67,6 +67,7 @@ return(
           .then(() => onAuthStateChanged(auth,(user) => {
             setModalVisible(false);//stop activiyIndicator
             setUid(user.uid);//update the user uid on global variables
+            setEmail(values.email);
             navigation.navigate('My Home');//redirect
           }))
           .catch((error) => {

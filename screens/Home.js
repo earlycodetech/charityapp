@@ -1,37 +1,54 @@
 import { useState,useEffect,useCallback,useContext } from "react";
 import { AppContext } from "../settings/globalVariables";
 import { View,Text,StyleSheet,FlatList,TouchableOpacity } from "react-native";
-import { sampleData } from '../assets/data/sample-data';
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
-import { faHeartCirclePlus,faUsersViewfinder,faClockRotateLeft,faCirclePlus,faSignOut } from "@fortawesome/free-solid-svg-icons";
+import { faHeartCirclePlus,faUsersViewfinder,faClockRotateLeft,faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import * as SplashScreen from 'expo-splash-screen';
-import * as Font from 'expo-font'; 
+import * as Font from 'expo-font';
 import { Pacifico_400Regular } from "@expo-google-fonts/pacifico";
 import { SafeArea } from "../components/SafeArea";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons  from 'react-native-vector-icons/Ionicons';
-import { Donate } from "./Donate";
+import { History } from "./History";
 import { About } from "./About";
 import { Theme } from "../utils/theme";
-import { auth } from '../settings/firebase.setting';
-import { signOut } from "firebase/auth";
+import { db } from "../settings/firebase.setting";
+import { collection,getDoc,getDocs,doc,query,orderBy,limit } from "firebase/firestore";
+import { numberWithCommas } from "../utils/numberWithCommas";
+import { toDateTime } from "../utils/timestampConversion";
 
 const Tab = createBottomTabNavigator();
 
 function Home ({navigation}) {
   const [appIsReady, setAppIsReady] = useState(false);
-  const {uid,setUid} = useContext(AppContext);
+  const {uid} = useContext(AppContext);
+  const [userRecords,setUserRecords] = useState(undefined);
+  const [donations,setDonations] = useState([]);
 
-  //handle sign out
-  const handleSignOut = () => {
-    signOut(auth)
-    .then(() => {
-      // uid ? setUid(undefined) : null;
-      navigation.navigate('Login')
-    })
-    .catch(error => console.log(error))
-  }
+//get all donations by the most recent, limit to 20 objects
+const handleGetDonations = async () => {
+  const donationsRef = collection(db,'donations');
+  const q = query(donationsRef,orderBy('createdAt','desc'),limit(20));
+
+  const querySnap = await getDocs(q);
+  setDonations(querySnap.docs.map(doc => {
+      return {
+          id:doc.id,
+          data:{...doc.data()}
+      }
+  }))
+}
+handleGetDonations();
+
+  //fetch data after component is loaded
+  useEffect(() => {
+    const handleGetUserRecords = async () => {
+      const snapShot = await getDoc(doc(db,'users',uid));
+      setUserRecords(snapShot.data());
+    }
+    handleGetUserRecords();
+  },[]);
 
   useEffect(() => {
     async function prepare() {
@@ -44,10 +61,10 @@ function Home ({navigation}) {
         setAppIsReady(true);
       }
     }
-
+  
     prepare();
   }, []);
-
+    
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
       await SplashScreen.hideAsync();
@@ -61,16 +78,19 @@ function Home ({navigation}) {
   return (
     <SafeArea>
       <View style={styles.header} >
-        <Text style={styles.brandName}>CharityApp</Text>
+        <Text style={{
+          fontSize:28,
+          fontFamily:'Pacifico_400Regular',
+        }}>Charity App</Text>
 
         <View style={styles.headerRight}>
-          <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+          <TouchableOpacity onPress={() => navigation.navigate(userRecords == undefined ? 'Create Profile' : 'Profile')}>
             <FontAwesomeIcon icon={faUser} color={Theme.colors.gray400} size={30}/>
           </TouchableOpacity>
-
+{/* 
           <TouchableOpacity onPress={handleSignOut}>
             <FontAwesomeIcon icon={faSignOut} color={Theme.colors.gray400} size={30}/>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
 
@@ -94,7 +114,9 @@ function Home ({navigation}) {
             <Text style={styles.optionText}>Raisers</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionBox}>
+          <TouchableOpacity 
+          onPress={() => navigation.navigate('History')}
+          style={styles.actionBox}>
             <FontAwesomeIcon 
             icon={faClockRotateLeft} 
             color={Theme.colors.lime100}
@@ -118,16 +140,16 @@ function Home ({navigation}) {
 
           <View style={styles.recentScroll}>
             <FlatList 
-            data={sampleData}
+            data={donations}
             renderItem={({item}) => {
               return (
                 <View style={styles.recentBlock}>
                   <View style={styles.donationDetails}>
-                    <Text style={styles.donationAmount}>₦{item.amount}</Text>
-                    <Text style={styles.donationInfo}>{item.time} minutes ago</Text>
+                    <Text style={styles.donationAmount}>₦{numberWithCommas(item.data.amount)}</Text>
+                    <Text style={styles.donationInfo}>{toDateTime(item.data.createdAt)}</Text>
                   </View>
     
-                  <Text style={styles.donatedBy}>Donated by {item.email}</Text>
+                  <Text style={styles.donatedBy}>Donated by {item.data.donatedByEmail}</Text>
                 </View>
               )
             }}
@@ -150,7 +172,7 @@ export function MyHome ({navigation}) {
 
           if (route.name === 'Home') {
             iconName = focused ? 'home-sharp' : 'home-outline';
-          } else if (route.name === 'Donate') {
+          } else if (route.name === 'History') {
             iconName = focused ? 'heart-circle-sharp' : 'heart-circle-outline';
           } else if (route.name === 'About') {
             iconName = focused ? 'information-circle' : 'information-circle-outline';
@@ -163,7 +185,7 @@ export function MyHome ({navigation}) {
       })}
     >
       <Tab.Screen name="Home" component={Home} options={{headerShown:false}}/>
-      <Tab.Screen name="Donate" component={Donate} options={{headerShown:false}}/>
+      <Tab.Screen name="History" component={History} options={{headerShown:true}}/>
       <Tab.Screen name="About" component={About} options={{headerShown:false}}/>
     </Tab.Navigator>
   )
@@ -173,12 +195,6 @@ const styles = StyleSheet.create({
   header:{
     flexDirection:'row',
     justifyContent:'space-between',
-  },
-  brandName:{
-    fontSize:28,
-    fontWeight:'bold',
-    color:Theme.colors.purple900,
-    fontFamily:'Pacifico_400Regular'
   },
   headerRight:{
     flexDirection:'row',

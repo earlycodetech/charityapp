@@ -40,21 +40,21 @@ export function Profile ({navigation}) {
                     <View style={styles.contentBox}>
                         <View style={{paddingLeft:9}}>
                             <Text>Date Of Birth :</Text>
-                            <Text style={{fontSize:28}}>{userRecords.dateOfBirth}</Text>
+                            <Text style={{fontWeight:'200',fontSize:28}}>{userRecords.dateOfBirth}</Text>
                         </View>
                     </View>
 
                     <View style={styles.contentBox}>
                         <View style={{paddingLeft:9}}>
                             <Text>City :</Text>
-                            <Text style={{fontSize:28}}>{userRecords.city}</Text>
+                            <Text style={{fontWeight:'200',fontSize:28}}>{userRecords.city}</Text>
                         </View>
                     </View>
 
                     <View style={styles.contentBox}>
                         <View style={{paddingLeft:9}}>
                             <Text>Bio :</Text>
-                            <Text style={{fontSize:28}}>{userRecords.bioInfo}</Text>
+                            <Text style={{fontWeight:'200',fontSize:28}}>{userRecords.bioInfo}</Text>
                         </View>
                     </View>
 

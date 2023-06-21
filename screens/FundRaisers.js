@@ -5,6 +5,7 @@ import { Button, Card, Text } from 'react-native-paper';
 import { Theme } from '../utils/theme';
 import { db } from '../settings/firebase.setting';
 import { getDocs,collection } from "firebase/firestore";
+import { numberWithCommas } from "../utils/numberWithCommas";
 
 export function FundRaisers ({navigation}) {
     const [raisers,setRaisers] = useState([]);
@@ -32,14 +33,15 @@ export function FundRaisers ({navigation}) {
                         <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
                         <Card.Content style={styles.cardContent}>
                             <Text variant="headlineMedium">{item.data.title}</Text>
-                            <Text variant="titleLarge" style={{color:'green',marginBottom:8}}>Target: ₦{item.data.target}</Text>
+                            <Text variant="titleLarge" style={{color:'green',marginBottom:8}}>
+                                Target: ₦{numberWithCommas(item.data.target)}
+                            </Text>
                             <Text variant="bodyMedium">{item.data.description}</Text>
                         </Card.Content>
                         <Card.Actions>
                             <Button onPress={() => navigation.navigate('Fund Raiser',{
                                 projectId:item.id,
                             })} style={styles.viewBtn}>View</Button>
-                            <Button style={styles.donateBtn}>Dontate</Button>
                         </Card.Actions>
                     </Card>
                 )
