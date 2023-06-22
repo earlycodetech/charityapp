@@ -7,6 +7,11 @@ import { addDoc,collection } from "firebase/firestore";
 import { Paystack } from "react-native-paystack-webview";
 import { publicKey } from "../settings/paystack.setting";
 
+//If you got the follwing error message, follw the steps outlined below to solve it
+
+//Build failed: Gradle build failed with unknown error. See logs for the "Run gradlew" phase for more information.
+
+//STEPS TO TAKE
 //Delete the existing build on expo.dev
 //remove the following from app.json
 // "extra": {
@@ -14,7 +19,9 @@ import { publicKey } from "../settings/paystack.setting";
 //       "projectId": "4add5f7e-573c-4910-ab1b-6a06045615ed"
 //     }
 //   }
-//Then, install the latest version of expo by running 
+//Then, install expo-cli again (to install the latest version of expo)
+//Copy your assets folder to another location (the next step might delete it). Copy it back (after the update) to your project if was deleted
+//Update other dependencies to be compatible with the latest expo-cli by running expo update 
 //Finally, run eas build -p android --profile preview
 
 export function Pay ({navigation,route}) {
