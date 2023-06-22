@@ -162,7 +162,7 @@ handleGetDonations();
   )
 }
 
-export function MyHome ({navigation}) {
+export function MyHome ({navigation}) { 
 
   return (
     <Tab.Navigator

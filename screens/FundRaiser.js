@@ -10,7 +10,7 @@ import * as yup from 'yup';
 import { numberWithCommas } from '../utils/numberWithCommas';
 
 const validationRules = yup.object({
-    amount:yup.number().required().min(100),
+    amount:yup.number().required().min(50),
 });
 
 export function FundRaiser ({navigation,route}) {

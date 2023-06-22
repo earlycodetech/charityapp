@@ -1,11 +1,21 @@
-import { useState,useContext } from "react";
+import { useContext } from "react";
 import { AppContext } from '../settings/globalVariables';
 import { StyleSheet,View,Alert } from "react-native";
 import { SafeArea } from "../components/SafeArea";
-import { Button, Card, Text,TextInput } from 'react-native-paper';
-import { Theme } from '../utils/theme';
 import { db } from '../settings/firebase.setting';
 import { addDoc,collection } from "firebase/firestore";
+import { Paystack } from "react-native-paystack-webview";
+import { publicKey } from "../settings/paystack.setting";
+
+//Delete the existing build on expo.dev
+//remove the following from app.json
+// "extra": {
+//     "eas": {
+//       "projectId": "4add5f7e-573c-4910-ab1b-6a06045615ed"
+//     }
+//   }
+//Then, install the latest version of expo by running 
+//Finally, run eas build -p android --profile preview
 
 export function Pay ({navigation,route}) {
     const {uid,email} = useContext(AppContext);
@@ -38,12 +48,24 @@ export function Pay ({navigation,route}) {
         })
     }
 
-    uid != undefined ? handlePostDonation() : null;
-
     return (
         <SafeArea>
             <View style={styles.container}>
-                <Text>Hello user</Text>
+            <Paystack  
+                paystackKey={publicKey}
+                amount={amount}
+                billingEmail={email}
+                activityIndicatorColor="green"
+                onCancel={(e) => {
+                    // handle response here
+                    navigation.navigate('My Home')
+                }}
+                onSuccess={(res) => {
+                    // handle response here
+                    handlePostDonation();
+                }}
+                autoStart={true}
+            />
             </View>
         </SafeArea>
     )
